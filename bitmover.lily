@@ -1,0 +1,22 @@
+import sys
+import (command_hash) commands
+
+if sys.argv.size() != 3: {
+    print("Usage: bitmover.lily <key> <input>")
+    0 / 0
+}
+
+var vm_key = sys.argv[1]
+var vm_input = sys.argv[2]
+var result = vm_input.to_bytestring()
+
+vm_key.split(",")
+      .map(|m| m.trim() )
+      .map(|name| command_hash.get(name) )
+      .reject(Option.is_none)
+      .map(Option.unwrap)
+      .each(|command_fn| command_fn(result) )
+
+print("bitmover: Key: '{0}'.".format(vm_key))
+print("bitmover: Input: '{0}'.".format(vm_input))
+print("bitmover: Result: '{0}'.".format(result))

@@ -1,0 +1,113 @@
+define do_DecreaseEach(source: ByteString) {
+    var i = 0
+
+    for i in 0...source.size() - 1: {
+        var b = source[i].to_i() - 1
+
+        if b < 0: {
+            b = 0xff
+        }
+
+        source[i] = b.to_byte()
+    }
+}
+
+define do_IncreaseEach(source: ByteString) {
+    var i = 0
+
+    for i in 0...source.size() - 1: {
+        var b = source[i].to_i() + 1
+
+        if b > 0xff: {
+            b = 0
+        }
+
+        source[i] = b.to_byte()
+    }
+}
+
+define do_PairSwap(source: ByteString) {
+    var i = 0
+    var end = source.size() - 1
+
+    if (end & 0x1) == 0: {
+        end -= 1
+    }
+
+    for i in 0...end by 2: {
+        var left = source[i]
+        var right = source[i + 1]
+
+        source[i] = right
+        source[i + 1] = left
+    }
+}
+
+define do_PairXor(source: ByteString) {
+    var i = 0
+    var end = source.size() - 1
+
+    if (end & 0x1) == 0: {
+        end -= 1
+    }
+
+    for i in 0...end by 2: {
+        var left = source[i].to_i()
+        var right = source[i + 1].to_i()
+
+        source[i] = left.to_byte()
+        source[i + 1] = (left ^ right).to_byte()
+    }
+}
+
+define do_LeftShiftTotal(source: ByteString) {
+    var i = 0
+    var end = source.size() - 2
+    var stash = (source[0].to_i() & 0b10000000) >> 7
+
+    for i in 0...end: {
+        var left = source[i].to_i() << 1
+        var right = source[i + 1].to_i()
+        var next = (right & 0b10000000) >> 7
+
+        left |= next
+
+        source[i] = left.to_byte()
+        source[i + 1] = right.to_byte()
+    }
+
+    var last = source[-1].to_i() << 1
+    last |= stash
+    source[-1] = last.to_byte()
+}
+
+define do_RightShiftTotal(source: ByteString) {
+    var i = 0
+    var end = source.size() - 1
+    var stash = (source[end].to_i() & 0b1) << 7
+
+    for i in end...1 by -1: {
+        var right = source[i].to_i()
+        var left = source[i - 1].to_i()
+
+        var next = (left & 0b1) << 7
+
+        right = (right >> 1) | next
+
+        source[i] = right.to_byte()
+    }
+
+    var first = source[0].to_i() >> 1
+    first |= stash
+    source[0] = first.to_byte()
+}
+
+var command_hash =
+    [
+     "DecreaseEach"    => do_DecreaseEach,
+     "IncreaseEach"    => do_IncreaseEach,
+     "PairSwap"        => do_PairSwap,
+     "PairXor"         => do_PairXor,
+     "LeftShiftTotal"  => do_LeftShiftTotal,
+     "RightShiftTotal" => do_RightShiftTotal
+     ]
