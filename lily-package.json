@@ -1,0 +1,7 @@
+{
+    "version": "v1.0.0",
+    "summary": "Basic demo of simple ciphers over user-defined input.",
+    "source": "https://github.com/FascinatedBox/lily-bitmover",
+    "license": "MIT",
+    "library": false
+}
